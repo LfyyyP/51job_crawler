@@ -72,7 +72,7 @@ if __name__ == '__main__':
         'sortType': '0',
         'pageNum': '1',
         'requestId': '',
-        'pageSize': '100',
+        'pageSize': '120',
         'source': '1',
         'accountId': '',
         'pageCode': 'sou|sou|soulb',
