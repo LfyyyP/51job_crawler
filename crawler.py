@@ -1,18 +1,63 @@
 import requests
+import pprint
+import csv
 
 
-url = 'https://we.51job.com/pc/search?jobArea=070000&keyword=plc&searchType=2&sortType=0&metro='
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-    'Referer': 'https://search.51job.com/',
-    'Host': 'we.51job.com',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Cookie': 'guid=5adff94a3d9c7298393a5e91b1e8096f; nsearch=jobarea%3D%26%7C%26ord_field%3D%26%7C%26recentSearch0%3D%26%7C%26recentSearch1%3D%26%7C%26recentSearch2%3D%26%7C%26recentSearch3%3D%26%7C%26recentSearch4%3D%26%7C%26collapse_expansion%3D; ssxmod_itna=Yqjx0QD=0QoqcDl3x+oboDCAKitdq33GkRFUUDBwb4iNDnD8x7YDv++TRQ+KizQmOW3Gv76GifQebj+nGWeSlYphfADCPGnDB9+xT+DYA8Dt4DTD34DYDixGaD8401D4qGCD3qDdLpkHXcD7fy3TjcFDD+Fdr6nqG2DGtPPO=DjqGgDBL5nnGcDDU=MnG/bmb3DYpW3qGy8PGuDG6lFqGmBSrDC26V0dXWMEoP+GvxRY4fA7x3RAweQDEe+7htAivrnYmdbBOiFBh43zCzQiD===; search=jobarea%7E%60070000%7C%21recentSearch0%7E%60070000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FAplc%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21recentSearch1%7E%60070000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FA%B1%E4%C6%B5%C6%F7%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21recentSearch2%7E%60030000%2C070000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FA%B1%E4%C6%B5%C6%F7%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21recentSearch3%7E%60030000%2C070000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FAjava%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21recentSearch4%7E%60030000%2C070000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FAplc%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21; privacy=1681182690; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%225adff94a3d9c7298393a5e91b1e8096f%22%2C%22first_id%22%3A%2218768e4b499af-0a18dcd02bd355-26031851-1327104-18768e4b49a3dd%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22eyIkaWRlbnRpdHlfY29va2llX2lkIjoiMTg3NjhlNGI0OTlhZi0wYTE4ZGNkMDJiZDM1NS0yNjAzMTg1MS0xMzI3MTA0LTE4NzY4ZTRiNDlhM2RkIiwiJGlkZW50aXR5X2xvZ2luX2lkIjoiNWFkZmY5NGEzZDljNzI5ODM5M2E1ZTkxYjFlODA5NmYifQ%3D%3D%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%225adff94a3d9c7298393a5e91b1e8096f%22%7D%2C%22%24device_id%22%3A%2218768e4b499af-0a18dcd02bd355-26031851-1327104-18768e4b49a3dd%22%7D; Hm_lvt_1370a11171bd6f2d9b1fe98951541941=1681092033,1681092426,1681182691; Hm_lpvt_1370a11171bd6f2d9b1fe98951541941=1681182691',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Connection': 'keep-alive',
-    'sec-ch-ua-platform': '"Windows"',
-
+f = open('data.csv', mode='a', encoding='utf-8', newline='')
+csv_writer = csv.DictWriter(f, fieldnames=[
+    'company_name',
+    'company_type',
+    'company_size',
+    'update_time',
+    'job_name',
+    'job_area',
+    'job_tags',
+    'salary',
+    'company_link',
+])
+url = 'https://cupidjob.51job.com/open/noauth/search-pc'
+data = {
+    'api_key': '51job',
+    'timestamp': '1681188460',
+    'keyword': 'plc',
+    'searchType': '2',
+    'function': '',
+    'industry': '',
+    'jobArea': '070000',
+    'jobArea2': '',
+    'landmark': '',
+    'metro': '',
+    'salary': '',
+    'workYear': '',
+    'degree': '',
+    'companyType': '',
+    'companySize': '',
+    'jobType': '',
+    'issueDate': '',
+    'sortType': '0',
+    'pageNum': '2',
+    'requestId': '',
+    'pageSize': '50',
+    'source': '1',
+    'accountId': '',
+    'pageCode': 'sou|sou|soulb',
 }
-response = requests.get(url=url, headers=headers)
-print(response)
-print(response.text)
+headers = {
+    'sign': '593b36966e1fea654dd4576286192213fdfab0aac4c0bdbcabdd314cd672416c',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+}
+response = requests.get(url=url, headers=headers, params=data)
+for index in response.json()['resultbody']['job']['items']:
+    dit = {
+        'company_name': index['companyName'],
+        'company_type': index['companyTypeString'],
+        'company_size': index['companySizeString'],
+        'update_time': index['updateDateTime'],
+        'job_name': index['jobName'],
+        'job_area': index['jobAreaString'],
+        'job_tags': index['jobTags'],
+        'salary': index['provideSalaryString'],
+        'company_link': index['companyHref'],
+    }
+    print(dit)
+    csv_writer.writerow(dit)
