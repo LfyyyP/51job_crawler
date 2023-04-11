@@ -69,17 +69,17 @@ if __name__ == '__main__':
         'companySize': '',
         'jobType': '',
         'issueDate': '',
-        'sortType': '0',
+        'sortType': '',
         'pageNum': '1',
         'requestId': '',
-        'pageSize': '100',
+        'pageSize': '20000',
         'source': '1',
         'accountId': '',
         'pageCode': 'sou|sou|soulb',
     }
     # 请求头
     headers = {
-        'sign': '593b36966e1fea654dd4576286192213fdfab0aac4c0bdbcabdd314cd672416c',
+        'sign': 'b6181233fa583e64fccfd0f97f451bdf576d485c7a7fc0c20980aa181ff3af7b',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
     }
     craw_data(url, headers, data)
