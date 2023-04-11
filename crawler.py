@@ -18,7 +18,7 @@ def get_sign(data):
 def craw_data(url, headers, data):
     response = requests.get(url=url, headers=headers, params=data)
     # 创建csv文件
-    f = open('data.csv', mode='a', encoding='utf-8', newline='')
+    f = open('data1.csv', mode='a', encoding='utf-8', newline='')
     csv_writer = csv.DictWriter(f, fieldnames=[
         'company_name',
         'company_type',
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         'searchType': '2',
         'function': '',
         'industry': '',
-        'jobArea': '070000',
+        'jobArea': '060000,090000,250000,260000',
         'jobArea2': '',
         'landmark': '',
         'metro': '',
