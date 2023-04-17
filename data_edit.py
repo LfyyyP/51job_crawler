@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-# 选择云贵川渝的数据
+# 选择云贵川渝的数据，并进行日期和关键词的筛选
 def select():
     column = ['company_name',
               'company_type',
@@ -17,6 +17,16 @@ def select():
     # print('去重前共有重复值个数：', df.duplicated().sum(), '去重前共有重复值个数：', len(df))
     df.drop_duplicates(keep='last', inplace=True)
     # print('去重前共有重复值个数：', df.duplicated().sum(), '去重前共有重复值个数：', len(df))
+
+    # 去掉含有一些关键词的数据
+    """关键词列表"""
+    wish_drop = ['嵌入', 'Linux', 'C#', 'Android', 'Android', '单片机', 'C语言']
+    for i in wish_drop:
+        df.drop(df[df['job_name'].str.contains(pat=i, regex=False)].index, inplace=True)
+    """筛选出近期数据"""
+    wish_date = '2023-03-01'
+    df.drop(df[df['update_time'] <= wish_date].index, inplace=True)
+
     # 挑选出重庆的数据
     select_cq = df.loc[df['job_area'].str.contains('重庆'), :]
     # 挑选出云南的数据
