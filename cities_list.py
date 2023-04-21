@@ -31,3 +31,38 @@ cities_ = {
     '新疆': '310000',
     '青海': '320000',
 }
+
+parameter = {
+        'api_key': '51job',
+        'timestamp': '1681701772',
+        'keyword': 'plc',
+        'searchType': '2',
+        'function': '',
+        'industry': '',
+        # 不同参数指定不同区域,这里指定了云、贵、川、渝
+        'jobArea': '060000,090000,250000,260000',
+        'jobArea2': '',
+        'landmark': '',
+        'metro': '',
+        'salary': '',
+        'workYear': '',
+        'degree': '',
+        'companyType': '',
+        'companySize': '',
+        'jobType': '',
+        # 发布日期筛选
+        'issueDate': '',
+        'sortType': '0',
+        'pageNum': '1',
+        'requestId': '',
+        # 可以直接指定爬取数据个数，经测试，最大值为20000
+        'pageSize': '10000',
+        'source': '1',
+        'accountId': '',
+        'pageCode': 'sou|sou|soulb',
+    }
+
+print(parameter['jobArea'])
+print(cities_['北京'])
+parameter['jobArea'] = cities_['北京'] + ',' + cities_['上海']
+print(parameter['jobArea'])
