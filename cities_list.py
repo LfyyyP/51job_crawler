@@ -55,7 +55,7 @@ parameter = {
         'sortType': '0',
         'pageNum': '1',
         'requestId': '',
-        # 可以直接指定爬取数据个数，经测试，最大值为20000
+        # 可以直接指定爬取数据个数，经测试，最大值为20000，
         'pageSize': '10000',
         'source': '1',
         'accountId': '',
