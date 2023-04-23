@@ -6,7 +6,7 @@ import csv
 def craw_data(url, headers, data):
     response = requests.get(url=url, headers=headers, params=data)
     # 创建csv文件
-    f = open('data_test.csv', mode='a', encoding='utf-8', newline='')
+    f = open('data.csv', mode='a', encoding='utf-8', newline='')
     csv_writer = csv.DictWriter(f, fieldnames=[
         'company_name',
         'company_type',
@@ -108,38 +108,12 @@ if __name__ == '__main__':
         '青海': '320000,',
     }
 
-    parameter = {
-        'api_key': '51job',
-        'timestamp': '1681701772',
-        'keyword': 'plc',
-        'searchType': '2',
-        'function': '',
-        'industry': '',
-        # 不同参数指定不同区域,这里指定了云、贵、川、渝
-        'jobArea': '060000,090000,250000,260000',
-        'jobArea2': '',
-        'landmark': '',
-        'metro': '',
-        'salary': '',
-        'workYear': '',
-        'degree': '',
-        'companyType': '',
-        'companySize': '',
-        'jobType': '',
-        # 发布日期筛选
-        'issueDate': '',
-        'sortType': '0',
-        'pageNum': '1',
-        'requestId': '',
-        # 可以直接指定爬取数据个数，经测试，最大值为20000
-        'pageSize': '10000',
-        'source': '1',
-        'accountId': '',
-        'pageCode': 'sou|sou|soulb',
-    }
     for i in list(cities_.keys()):
         print(i, end=' ')
+    city = input('\n请输入想要搜索的关键词：')
     area = input('\n请输入想要爬取的城市名称(务必从上表中选取！)：')
     area = cities_[area]
     data['jobArea'] = area
+    data['keyword'] = city
+    print(data['keyword'])
     craw_data(url, headers, data)
