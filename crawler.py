@@ -35,6 +35,9 @@ def craw_data(url, headers, data):
         csv_writer.writerow(dit)
 
 
+
+
+
 if __name__ == '__main__':
     # 真实网页地址，从Network模块中获取
     url = 'https://cupidjob.51job.com/open/noauth/search-pc'
