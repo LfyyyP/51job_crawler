@@ -112,20 +112,24 @@ def craw_data(url, headers, data, column):
 
 def data_edit():
     df = pd.read_csv('data.csv', names=column)
+    # 去重
     df.drop_duplicates(keep='last', inplace=True)
+    # 写成xlsx格式文件
     writer = pd.ExcelWriter('客户数据.xlsx')
     df.to_excel(writer)
     writer.save()
+    # 删除csv格式文件
     os.remove('data.csv')
     print('爬取完成！')
     return 0
 
 
 def start_doing():
+    print('欢迎来到51job数据爬虫！\n', '如需连续爬取，请务必将上一次爬取结果重命名！')
     for i in list(cities_.keys()):
         print(i, end=' ')
     city = input('\n请输入想要搜索的关键词：')
-    area = input('\n请输入想要爬取的城市名称(务必从上表中选取！)：')
+    area = input('请输入想要爬取的城市名称(务必从上表中选取！)：')
     area = cities_[area]
     data['jobArea'] = area
     data['keyword'] = city
