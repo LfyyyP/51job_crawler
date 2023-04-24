@@ -30,7 +30,7 @@ data = {
     'pageNum': '1',
     'requestId': '',
     # 可以直接指定爬取数据个数，经测试，最大值为20000
-    'pageSize': '10000',
+    'pageSize': '20000',
     'source': '1',
     'accountId': '',
     'pageCode': 'sou|sou|soulb',
@@ -119,7 +119,7 @@ def data_edit():
     df.to_excel(writer)
     writer.save()
     # 删除csv格式文件
-    os.remove('data.csv')
+    # os.remove('data.csv')
     print('爬取完成！')
     return 0
 
