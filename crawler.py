@@ -11,6 +11,8 @@ from fake_useragent import UserAgent
 url = 'https://cupidjob.51job.com/open/noauth/search-pc'
 orign = '/open/noauth/search-pc?api_key=51job&timestamp=1681189650&keyword=plc&searchType=2&function=&industry=&jobArea=070000&jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
 
+proxies = {'http': "http://50.220.168.134:80",
+           'https': "http://5.78.79.84:8080"}
 # 浏览真实网页所需参数
 data = {
     'api_key': '51job',
@@ -95,7 +97,7 @@ column = ['company_name',
 
 # 爬取数据
 def craw_data(url, headers, data, column):
-    response = requests.get(url=url, headers=headers, params=data)
+    response = requests.get(url=url, headers=headers, params=data, proxies=proxies)
     time.sleep(3)
     # 创建csv文件
     f = open('data.csv', mode='a', encoding='utf-8', newline='')
@@ -149,6 +151,7 @@ def start_doing():
     data_5 = 'jobArea=' + data['jobArea']
     data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
     speStr = '&'
+    backAddr = data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6
     sign = get_sign(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
     headers['sign'] = sign
     # print(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
