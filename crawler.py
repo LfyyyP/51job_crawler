@@ -184,6 +184,10 @@ def get_sign(data):
 
 
 if __name__ == '__main__':
-    fileName, keyWord = start_doing()
-    craw_data(url, headers, data, column)
-    data_edit(fileName, keyWord)
+    while True:
+        fileName, keyWord = start_doing()
+        craw_data(url, headers, data, column)
+        data_edit(fileName, keyWord)
+        exCon = input('是否继续爬取？继续：输入1 退出：输入0：')
+        if exCon == '0':
+            break
