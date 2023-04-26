@@ -2,9 +2,15 @@ import os
 import requests
 import csv
 import pandas as pd
+import hmac
+from hashlib import sha256
+import time
+from fake_useragent import UserAgent
 
 # 真实网页地址，从Network模块中获取
 url = 'https://cupidjob.51job.com/open/noauth/search-pc'
+orign = '/open/noauth/search-pc?api_key=51job&timestamp=1681189650&keyword=plc&searchType=2&function=&industry=&jobArea=070000&jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
+
 # 浏览真实网页所需参数
 data = {
     'api_key': '51job',
@@ -42,37 +48,37 @@ headers = {
                   'Chrome/111.0.0.0 Safari/537.36',
 }
 cities_ = {
-    '北京': '010000,',
-    '上海': '020000,',
-    '天津': '050000,',
-    '重庆': '060000,',
-    '广东': '030000,',
-    '江苏': '070000,',
-    '浙江': '080000,',
-    '四川': '090000,',
-    '海南': '100000,',
-    '福建': '110000,',
-    '山东': '120000,',
-    '江西': '130000,',
-    '广西': '140000,',
-    '安徽': '150000,',
-    '河北': '160000,',
-    '河南': '170000,',
-    '湖北': '180000,',
-    '湖南': '190000,',
-    '陕西': '200000,',
-    '山西': '210000,',
-    '黑龙江': '220000,',
-    '辽宁': '230000,',
-    '吉林': '240000,',
-    '云南': '250000,',
-    '贵州': '260000,',
-    '甘肃': '270000,',
-    '内蒙古': '280000,',
-    '宁夏': '290000,',
-    '西藏': '300000,',
-    '新疆': '310000,',
-    '青海': '320000,',
+    '北京': '010000',
+    '上海': '020000',
+    '天津': '050000',
+    '重庆': '060000',
+    '广东': '030000',
+    '江苏': '070000',
+    '浙江': '080000',
+    '四川': '090000',
+    '海南': '100000',
+    '福建': '110000',
+    '山东': '120000',
+    '江西': '130000',
+    '广西': '140000',
+    '安徽': '150000',
+    '河北': '160000',
+    '河南': '170000',
+    '湖北': '180000',
+    '湖南': '190000',
+    '陕西': '200000',
+    '山西': '210000',
+    '黑龙江': '220000',
+    '辽宁': '230000',
+    '吉林': '240000',
+    '云南': '250000',
+    '贵州': '260000',
+    '甘肃': '270000',
+    '内蒙古': '280000',
+    '宁夏': '290000',
+    '西藏': '300000',
+    '新疆': '310000',
+    '青海': '320000',
 }
 
 column = ['company_name',
@@ -90,6 +96,7 @@ column = ['company_name',
 # 爬取数据
 def craw_data(url, headers, data, column):
     response = requests.get(url=url, headers=headers, params=data)
+    time.sleep(3)
     # 创建csv文件
     f = open('data.csv', mode='a', encoding='utf-8', newline='')
     csv_writer = csv.DictWriter(f, fieldnames=column)
@@ -133,8 +140,33 @@ def start_doing():
     area = cities_[area]
     data['jobArea'] = area
     data['keyword'] = city
+    # 构造sign参数
+    now = str(int(time.time()))
+    data_1 = '/open/noauth/search-pc?api_key=51job&'
+    data_2 = 'timestamp=' + now
+    data_3 = 'keyword=' + data['keyword']
+    data_4 = 'searchType=2&function=&industry=&'
+    data_5 = 'jobArea=' + data['jobArea']
+    data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
+    speStr = '&'
+    sign = get_sign(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
+    headers['sign'] = sign
+    # print(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
+    # 构造UserAgent
+    fake_headers = {"user-agent": UserAgent().random}
+    headers['User-Agent'] = fake_headers['user-agent']
+    # 构造fakeIP
     print('请等待爬取过程！')
     return 0
+
+
+#  获取签名
+def get_sign(data):
+    key = 'abfc8f9dcf8c3f3d8aa294ac5f2cf2cc7767e5592590f39c3f503271dd68562b'
+    key = key.encode('utf-8')
+    message = data.encode('utf-8')
+    sign = hmac.new(key, message, digestmod=sha256).hexdigest()
+    return sign
 
 
 if __name__ == '__main__':
