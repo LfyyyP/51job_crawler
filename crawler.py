@@ -5,7 +5,7 @@ import pandas as pd
 import hmac
 from hashlib import sha256
 import time
-from fake_useragent import UserAgent
+# from fake_useragent import UserAgent
 
 # 真实网页地址，从Network模块中获取
 url = 'https://cupidjob.51job.com/open/noauth/search-pc'
@@ -13,8 +13,6 @@ orign = '/open/noauth/search-pc?api_key=51job&timestamp=1681189650&keyword=plc&s
         '=&jobArea=070000&jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType' \
         '=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
 
-proxies = {'http': "http://50.220.168.134:80",
-           'https': "http://5.78.79.84:8080"}
 # 浏览真实网页所需参数
 data = {
     'api_key': '51job',
@@ -130,12 +128,12 @@ def craw_data(url, headers, data, column):
     return 0
 
 
-def data_edit(city):
+def data_edit(city, keyWord):
     df = pd.read_csv('data.csv', names=column)
     # 去重
     df.drop_duplicates(keep='last', inplace=True)
     # 写成xlsx格式文件
-    writer = pd.ExcelWriter('{}.xlsx'.format(city))
+    writer = pd.ExcelWriter('{} {} {}.xlsx'.format(keyWord, '_', city))
     df.to_excel(writer)
     writer.save()
     # 删除csv格式文件
@@ -145,12 +143,12 @@ def data_edit(city):
 
 
 def start_doing():
-    print('欢迎来到51job数据爬虫！\n')
+    print('欢迎来到51job数据爬虫！')
+    keyWord = input('请输入想要搜索的关键词：')
     for i in list(cities_.keys()):
         print(i, end=' ')
-    keyWord = input('\n请输入想要搜索的关键词：')
-    city = input('请输入想要爬取的城市名称(务必从上表中选取！)：')
-    city = cities_[city]
+    cityPrint = input('\n请输入想要爬取的城市名称(务必从上表中选取！)：')
+    city = cities_[cityPrint]
     data['jobArea'] = city
     data['keyword'] = keyWord
     # 构造sign参数
@@ -169,11 +167,11 @@ def start_doing():
     # print(backAddr)
     headers['sign'] = sign
     # 构造UserAgent
-    fake_headers = {"user-agent": UserAgent().random}
-    headers['User-Agent'] = fake_headers['user-agent']
+    # fake_headers = {"user-agent": UserAgent().random}
+    # headers['User-Agent'] = fake_headers['user-agent']
     # 构造fakeIP
     print('请等待爬取过程！')
-    return city
+    return cityPrint, keyWord
 
 
 #  获取签名
@@ -186,6 +184,6 @@ def get_sign(data):
 
 
 if __name__ == '__main__':
-    fileName = start_doing()
+    fileName, keyWord = start_doing()
     craw_data(url, headers, data, column)
-    data_edit(fileName)
+    data_edit(fileName, keyWord)
