@@ -9,7 +9,9 @@ from fake_useragent import UserAgent
 
 # 真实网页地址，从Network模块中获取
 url = 'https://cupidjob.51job.com/open/noauth/search-pc'
-orign = '/open/noauth/search-pc?api_key=51job&timestamp=1681189650&keyword=plc&searchType=2&function=&industry=&jobArea=070000&jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
+orign = '/open/noauth/search-pc?api_key=51job&timestamp=1681189650&keyword=plc&searchType=2&function=&industry' \
+        '=&jobArea=070000&jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType' \
+        '=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
 
 proxies = {'http': "http://50.220.168.134:80",
            'https': "http://5.78.79.84:8080"}
@@ -128,12 +130,12 @@ def craw_data(url, headers, data, column):
     return 0
 
 
-def data_edit():
+def data_edit(city):
     df = pd.read_csv('data.csv', names=column)
     # 去重
     df.drop_duplicates(keep='last', inplace=True)
     # 写成xlsx格式文件
-    writer = pd.ExcelWriter('客户数据.xlsx')
+    writer = pd.ExcelWriter('{}.xlsx'.format(city))
     df.to_excel(writer)
     writer.save()
     # 删除csv格式文件
@@ -143,14 +145,14 @@ def data_edit():
 
 
 def start_doing():
-    print('欢迎来到51job数据爬虫！\n', '如需连续爬取，请务必将上一次得到的表格重命名，否则会覆盖！')
+    print('欢迎来到51job数据爬虫！\n')
     for i in list(cities_.keys()):
         print(i, end=' ')
-    city = input('\n请输入想要搜索的关键词：')
-    area = input('请输入想要爬取的城市名称(务必从上表中选取！)：')
-    area = cities_[area]
-    data['jobArea'] = area
-    data['keyword'] = city
+    keyWord = input('\n请输入想要搜索的关键词：')
+    city = input('请输入想要爬取的城市名称(务必从上表中选取！)：')
+    city = cities_[city]
+    data['jobArea'] = city
+    data['keyword'] = keyWord
     # 构造sign参数
     now = str(int(time.time()))
     data_1 = '/open/noauth/search-pc?api_key=51job&'
@@ -158,7 +160,8 @@ def start_doing():
     data_3 = 'keyword=' + data['keyword']
     data_4 = 'searchType=2&function=&industry=&'
     data_5 = 'jobArea=' + data['jobArea']
-    data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=20&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
+    data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate' \
+             '=&sortType=0&pageNum=1&requestId=&pageSize=20&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
     speStr = '&'
     backAddr = data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6
     sign = get_sign(backAddr)
@@ -170,7 +173,7 @@ def start_doing():
     headers['User-Agent'] = fake_headers['user-agent']
     # 构造fakeIP
     print('请等待爬取过程！')
-    return 0
+    return city
 
 
 #  获取签名
@@ -183,6 +186,6 @@ def get_sign(data):
 
 
 if __name__ == '__main__':
-    start_doing()
+    fileName = start_doing()
     craw_data(url, headers, data, column)
-    data_edit()
+    data_edit(fileName)
