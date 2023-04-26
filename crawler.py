@@ -16,7 +16,7 @@ proxies = {'http': "http://50.220.168.134:80",
 # 浏览真实网页所需参数
 data = {
     'api_key': '51job',
-    'timestamp': '1681701772',
+    'timestamp': '',
     'keyword': 'plc',
     'searchType': '2',
     'function': '',
@@ -48,6 +48,15 @@ headers = {
     'sign': '21979efb8f05715fca87ba0a3eacf5fc9490d1f10c8714e6b8e899a17af30aee',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/111.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'Connection': 'keep-alive',
+    'From-Domain': '51job_web',
+    'Host': 'cupidjob.51job.com',
+    'Origin': 'https://we.51job.com',
+    'Referer': 'https://we.51job.com/',
+    'uuid': '37c1001f745692a4df81eb789dfe9003,'
 }
 cities_ = {
     '北京': '010000',
@@ -97,10 +106,10 @@ column = ['company_name',
 
 # 爬取数据
 def craw_data(url, headers, data, column):
-    response = requests.get(url=url, headers=headers, params=data, proxies=proxies)
+    response = requests.get(url=url, headers=headers, params=data)
     time.sleep(3)
     # 创建csv文件
-    f = open('data.csv', mode='a', encoding='utf-8', newline='')
+    f = open('data.csv', mode='w', encoding='utf-8', newline='')
     csv_writer = csv.DictWriter(f, fieldnames=column)
     # 循环写入网页中的数据
     for index in response.json()['resultbody']['job']['items']:
@@ -116,7 +125,7 @@ def craw_data(url, headers, data, column):
             'company_link': index['companyHref'],
         }
         csv_writer.writerow(dit)
-        return 0
+    return 0
 
 
 def data_edit():
@@ -128,13 +137,13 @@ def data_edit():
     df.to_excel(writer)
     writer.save()
     # 删除csv格式文件
-    # os.remove('data.csv')
+    os.remove('data.csv')
     print('爬取完成！')
     return 0
 
 
 def start_doing():
-    print('欢迎来到51job数据爬虫！\n', '如需连续爬取，请务必将上一次爬取结果重命名！')
+    print('欢迎来到51job数据爬虫！\n', '如需连续爬取，请务必将上一次得到的表格重命名，否则会覆盖！')
     for i in list(cities_.keys()):
         print(i, end=' ')
     city = input('\n请输入想要搜索的关键词：')
@@ -149,12 +158,13 @@ def start_doing():
     data_3 = 'keyword=' + data['keyword']
     data_4 = 'searchType=2&function=&industry=&'
     data_5 = 'jobArea=' + data['jobArea']
-    data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=50&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
+    data_6 = 'jobArea2=&landmark=&metro=&salary=&workYear=&degree=&companyType=&companySize=&jobType=&issueDate=&sortType=0&pageNum=1&requestId=&pageSize=20&source=1&accountId=&pageCode=sou%7Csou%7Csoulb'
     speStr = '&'
     backAddr = data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6
-    sign = get_sign(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
+    sign = get_sign(backAddr)
+    # print(sign)
+    # print(backAddr)
     headers['sign'] = sign
-    # print(data_1 + data_2 + speStr + data_3 + speStr + data_4 + data_5 + speStr + data_6)
     # 构造UserAgent
     fake_headers = {"user-agent": UserAgent().random}
     headers['User-Agent'] = fake_headers['user-agent']
